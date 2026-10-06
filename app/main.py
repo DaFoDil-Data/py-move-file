@@ -20,6 +20,12 @@ def move_file(command: str) -> None:
         return
     destination_directory = os.path.dirname(destination_name)
     if destination_directory:
-        os.makedirs(destination_directory, exist_ok=True)
+        missing_directories = []
+        directory = os.path.abspath(destination_directory)
+        while not os.path.exists(directory):
+            missing_directories.append(directory)
+            directory = os.path.dirname(directory)
+        for directory in reversed(missing_directories):
+            os.mkdir(directory)
     shutil.copyfile(source_name, destination_name)
     os.remove(source_name)
